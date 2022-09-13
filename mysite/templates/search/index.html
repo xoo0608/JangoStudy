@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container my-3">
+    <form action="/search" method="get">
+        <label for="id">Enter name: </label>
+        <input type="text" name="idnum" value="" >
+        <input type="submit" value="OK" class="btn btn-primary">
+    </form>
+    {{num}}
+    {{name}}
+    {{price}}
+</div>
+{% endblock %}
