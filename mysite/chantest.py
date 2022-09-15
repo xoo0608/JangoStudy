@@ -2,6 +2,7 @@ import json
 from bs4 import BeautifulSoup   
 import requests
 from urllib.request import urlopen
+import config
 
 def savedata(date):
         data = get_obj(date)
@@ -11,7 +12,7 @@ def savedata(date):
                 json.dump(data, file)
 
 def get_obj(date):
-    url = "https://apis.data.go.kr/1160100/service/GetStockSecuritiesInfoService/getStockPriceInfo?serviceKey=EnI%2BWCR%2F1WCwJzCrX3HJIgiyH0aU2mnYXU4WMsWLK%2BS2rAJcyQCm%2BR6Zl4TNwsj70EdQwq%2FPPrKoW17OS9fUqg%3D%3D&numOfRows=10000&resultType=json&basDt=" + date
+    url = "https://apis.data.go.kr/1160100/service/GetStockSecuritiesInfoService/getStockPriceInfo?serviceKey="+ config.APT_KEY +"&numOfRows=10000&resultType=json&basDt=" + date
     result = requests.get(url,verify=False).text
     data = json.loads(result)
     datalist = data.get("response").get("body").get("items").get("item")
