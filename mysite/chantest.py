@@ -27,7 +27,7 @@ def get_json(date):
                         print(i.get("itmsNm") + " " + i.get("mrktCtg") + " " + i.get("srtnCd"))
 
 #get_json("20220908")
-get_obj("20220915")
-
+#get_obj("20220908")
+savedata("20220914")
 
 
