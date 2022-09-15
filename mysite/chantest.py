@@ -1,26 +1,32 @@
+import json
+from bs4 import BeautifulSoup   
 import requests
-from bs4 import BeautifulSoup
-import time
+from urllib.request import urlopen
 
-def get_bs_obj(com_code):
-        url = "https://finance.naver.com/item/main.nhn?code=" + com_code
-        result = requests.get(url)
-        bs_obj = BeautifulSoup(result.content, "html.parser") #html.parser 로 파이썬에서 쓸 수 있는 형태로 변환
-        return bs_obj
+def savedata(date):
+        data = get_obj(date)
+        file_path = "./data/" + date + ".json"
 
-def get_price(com_code):
-        bs_obj = get_bs_obj(com_code)
-        no_today = bs_obj.find("p", {"class":"no_today"})
-        blind_now = no_today.find("span", {"class":"blind"})
-        return blind_now.text
+        with open(file_path, 'w', encoding='utf-8') as file:
+                json.dump(data, file)
 
-def get_name(com_code):
-        bs_obj = get_bs_obj(com_code)
-        no_today = bs_obj.find("th", {"class":"no1"})
-        blind_now = no_today.find("a")
-        return blind_now.text
+def get_obj(date):
+    url = "https://apis.data.go.kr/1160100/service/GetStockSecuritiesInfoService/getStockPriceInfo?serviceKey=EnI%2BWCR%2F1WCwJzCrX3HJIgiyH0aU2mnYXU4WMsWLK%2BS2rAJcyQCm%2BR6Zl4TNwsj70EdQwq%2FPPrKoW17OS9fUqg%3D%3D&numOfRows=10000&resultType=json&basDt=" + date
+    result = requests.get(url,verify=False).text
+    data = json.loads(result)
+    datalist = data.get("response").get("body").get("items").get("item")
+    print(len(datalist))
+    return data
 
-#삼성전자 005930
-print("삼성전자 현제가")
-print(get_price("005930"))
-print(get_name("005930"))
+def get_json(date):
+        with open ("data/" + date + ".json", "r") as f:
+                data = json.load(f)
+                datalist = data.get("response").get("body").get("items").get("item")
+                for i in datalist:
+                        print(i.get("itmsNm") + " " + i.get("mrktCtg") + " " + i.get("srtnCd"))
+
+#get_json("20220908")
+get_obj("20220915")
+
+
+
