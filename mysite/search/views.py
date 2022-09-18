@@ -7,8 +7,6 @@ import json
 import os.path 
 from datetime import datetime, timedelta
 
-
-
 def get_json(date, num):
     file_path = "2022data/" + date + ".json"
     if os.path.exists(file_path):
@@ -21,6 +19,17 @@ def get_json(date, num):
     else:
         return 999
 
+def get_json2(date, name):
+    file_path = "2022data/" + date + ".json"
+    if os.path.exists(file_path):
+        with open (file_path, "r") as f:
+                data = json.load(f)
+                datalist = data.get("response").get("body").get("items").get("item")
+                for i in datalist:
+                    if(i.get("itmsNm") == name):
+                        return i.get("fltRt")
+    else:
+        return 999
 
 def get_bs_obj(com_code):
     url = "https://finance.naver.com/item/main.nhn?code=" + com_code
@@ -37,9 +46,21 @@ def get_price(com_code):
 
 def get_name(com_code):
         bs_obj = get_bs_obj(com_code)
-        no_today = bs_obj.find("th", {"class":"no1"})
-        blind_now = no_today.find("a")
-        return blind_now.text
+        # no_today = bs_obj.find("th", {"class":"no1"})
+        # blind_now = no_today.find("a")
+        return bs_obj.select_one('#middle > div.h_company > div.wrap_company > h2 > a').string
+
+def get_num(com_code):
+    file_path = "2022data/" + "20220915" + ".json"
+    if os.path.exists(file_path):
+        with open (file_path, "r") as f:
+                data = json.load(f)
+                datalist = data.get("response").get("body").get("items").get("item")
+                for i in datalist:
+                    if(i.get("itmsNm") == com_code):
+                        return i.get("srtnCd")
+    else:
+        return 999
 
 # def index(request):
 #     if request.method == 'GET':
@@ -62,7 +83,12 @@ def index(request):
     if request.method == 'GET':
         if(request.GET.get("idnum", None) != None):
             num = request.GET.get("idnum", None)
-            name = get_name(num)
+            if '0' <= num[0] and num[0] <= '9':
+                name = get_name(num)
+            else:
+                name = num
+                num = get_num(name)
+
             price = []
             start = "20220901"
             last = "20220915"
@@ -75,10 +101,9 @@ def index(request):
                     price.append(get_json(dates, num))
                 # 하루 더하기
                 start_date += timedelta(days=1)
-
-            print(price)
             context = {'num' : num, 'name' : name, 'price' : price,}
             return render(request, 'search/index.html', context)
+            
     return render(request, 'search/index.html')
 
 def results(request):
