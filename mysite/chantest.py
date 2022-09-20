@@ -13,9 +13,11 @@ def savedata(date):
         file_path = "./2022data/" + date + ".json"
         datalist = data.get("response").get("body").get("items").get("item")
         if len(datalist) > 1:
-                print("no!")
+                print("yes!")
                 with open(file_path, 'w', encoding='utf-8') as file:
                         json.dump(data, file)
+        else:
+                print("no!")
 
 def get_obj(date):
         time.sleep(0.3)
