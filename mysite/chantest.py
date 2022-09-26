@@ -35,7 +35,7 @@ def get_json(date):
 
 #get_json("20220908")
 #get_obj("20220908")
-savedata("20220922")
+savedata("20220923")
 
 
 # start = "20211213"

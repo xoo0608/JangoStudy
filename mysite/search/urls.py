@@ -9,4 +9,5 @@ urlpatterns = [
     path('', views.index, name='index'),
     # ex: /search/results/
     path('results/', views.results, name='results'),
+    path('two/', views.searchtwo, name='two'),
 ]

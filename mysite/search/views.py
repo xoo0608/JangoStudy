@@ -112,3 +112,39 @@ def results(request):
     #return render(request, 'search/index.html', context)
     return HttpResponse(request.GET.get('idnum'))
 
+def searchtwo(request):
+    if request.method == 'GET':
+        if(request.GET.get("idnum1", None) != None and request.GET.get("idnum2", None) != None):
+            num1 = request.GET.get("idnum1", None)
+            num2 = request.GET.get("idnum2", None)
+            if '0' <= num1[0] and num1[0] <= '9':
+                name1 = get_name(num1)
+            else:
+                name1 = num1
+                num1 = get_num(name1)
+
+            if '0' <= num2[0] and num2[0] <= '9':
+                name2 = get_name(num2)
+            else:
+                name2 = num2
+                num2 = get_num(name2)
+
+            price1 = []
+            price2 = []
+            start = "20220901"
+            last = "20220915"
+            start_date = datetime.strptime(start, "%Y%m%d")
+            last_date = datetime.strptime(last, "%Y%m%d")
+            while start_date <= last_date:
+                dates = start_date.strftime("%Y%m%d")
+                # print(dates)
+                if get_json(dates, num1) != 999:
+                    price1.append(get_json(dates, num1))
+                    price2.append(get_json(dates, num2))
+                # 하루 더하기
+                start_date += timedelta(days=1)
+            context = {'num1' : num1, 'name1' : name1, 'price1' : price1,
+            'num2' : num2, 'name2' : name2, 'price2' : price2,}
+            return render(request, 'search/searchtwo.html', context)
+            
+    return render(request, 'search/searchtwo.html')
